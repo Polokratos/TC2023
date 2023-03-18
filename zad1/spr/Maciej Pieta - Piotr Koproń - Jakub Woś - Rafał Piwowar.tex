@@ -17,5 +17,42 @@
 \begin{document}
 \maketitle
 \newpage
-
+\section{Zadanie 1a}
+\subsection{Treść zadania}
+\paragraph{}
+Bazując wyłącznie na dwuwejściowych bramkach logicznych NAND, proszę od podstaw  zaprojektować, zbudować i przetestować układ realizujący funkcję logiczną:
+\begin{equation}
+Y = \overline{A} \text{ xor } (B + C)
+\end{equation}
+\subsection{Rozwiązanie teoretyczne}
+Dokonujemy następujących przekształceń:
+\begin{align*}
+ Y &= \overline{A} \text{ xor } (B + C) \\
+ &= \overline{A} \cdot \overline{(B+C)} + \overline{\overline{A}} \cdot (B+C) \\
+&= \overline{A} \cdot (\overline{B}+\overline{C}) + A \cdot (B+C) \\
+&= \overline{A} \cdot \overline{\overline{(\overline{B} \cdot \overline{C})}} + A \cdot \overline{\overline{(B+C)}} \\
+&= \overline{A} \cdot \overline{\overline{(\overline{B} \cdot \overline{C})}} + A \cdot \overline{(\overline{B} \cdot \overline{C})} \\
+|K = \overline{(\overline{B} \cdot \overline{C})}| &= \overline{A} \cdot \overline{K} + A \cdot K \\
+&= \overline{\overline{\overline{A} \cdot \overline{K} + A \cdot K}} \\
+&= \overline{\overline{\overline{A} \cdot \overline{K}} \cdot \overline{A \cdot K}} \\
+&= \overline{\overline{\overline{A} \cdot \overline{\overline{(\overline{B} \cdot \overline{C})}}} \cdot \overline{A \cdot \overline{(\overline{B} \cdot \overline{C})}}}
+\end{align*}
+\subsection{Implementacja układu w programie Multisim}
+\subsection{Wnioski}
+\newpage
+\section{Zadanie 1b}
+\subsection{Treść zadania}
+\paragraph{}
+Rozważmy pomieszczenie w którym znajdują się: drzwi wejściowe i dwa okna (wszystko wyposażone w czujniki stanu zamknięcia). Poza tym znajduje się tam: czujnik ruchu, syrena alarmowa (może być reprezentowana wskaźnikiem LED), dwa przyciski: uzbrojenia i rozbrojenia alarmu, dwa wskaźniki LED: alarm uzbrojony i alarm wyłączony, LEDowy czerwony sygnalizator problemu załączenia alarmu.
+\paragraph{}
+Alarm można uzbroić dedykowanym przyciskiem tylko wtedy, gdy w pomieszczeniu nie wykryto ruchu, a drzwi i okna są skutecznie zamknięte. Wówczas powinna zaświecić się kontrolka uzbrojenia alarmu. Jeśli warunki te nie są spełnione, zaświeca się czerwony sygnalizator problemu, a alarm pozostaje rozbrojony, co ciągle wówczas sygnalizuje stosowny wskaźnik LED.
+\paragraph{}
+Poprawne uzbrojenie alarmu powoduje zgaszenie się wskaźnika rozbrojenia alarmu i sygnalizatora problemu (jeśli jest zaświecony) oraz powoduje zaświecenie się wskaźnika uzbrojenia alarmu.
+\paragraph{}
+Alarm uruchamia się, gdy system alarmowy jest uzbrojony i wykryty jest ruch lub sygnalizowane jest otwarcie: drzwi lub któregoś z okien.
+\paragraph{}
+W oparciu o dowolne bramki logiczne, przełączniki i wskaźniki LED, proszę zaprojektować, zminimalizować, zbudować i przetestować układ realizujący funkcję opisanego wyżej systemu alarmowego. Rolę czujników mogą tutaj pełnić dowolne (dostępne w Multisimie) źródła sygnału cyfrowego.
+\subsection{Rozwiązanie teoretyczne}
+\subsection{Implementacja układu w programie Multisim}
+\subsection{Wnioski}
 \end{document}
