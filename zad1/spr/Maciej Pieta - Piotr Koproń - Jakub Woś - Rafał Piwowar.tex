@@ -25,11 +25,11 @@ Bazując wyłącznie na dwuwejściowych bramkach logicznych NAND, proszę od pod
 Y = \overline{A} \text{ xor } (B + C)
 \end{equation}
 \subsection{Rozwiązanie teoretyczne}
-Dokonujemy następujących przekształceń:
+Dokonujemy następujących przekształceń, korzystając z definicji xor, praw de Morgana oraz prawa podwójnej negacji.
 \begin{align*}
  Y &= \overline{A} \text{ xor } (B + C) \\
- &= \overline{A} \cdot \overline{(B+C)} + \overline{\overline{A}} \cdot (B+C) \\
-&= \overline{A} \cdot (\overline{B}+\overline{C}) + A \cdot (B+C) \\
+ &= \overline{A} \cdot \overline{(B+C)} + \overline{\overline{A}} \cdot (B+C)\\
+&= \overline{A} \cdot (\overline{B} \cdot \overline{C}) + A \cdot (B+C)\\
 &= \overline{A} \cdot \overline{\overline{(\overline{B} \cdot \overline{C})}} + A \cdot \overline{\overline{(B+C)}} \\
 &= \overline{A} \cdot \overline{\overline{(\overline{B} \cdot \overline{C})}} + A \cdot \overline{(\overline{B} \cdot \overline{C})} \\
 |K = \overline{(\overline{B} \cdot \overline{C})}| &= \overline{A} \cdot \overline{K} + A \cdot K \\
@@ -37,8 +37,16 @@ Dokonujemy następujących przekształceń:
 &= \overline{\overline{\overline{A} \cdot \overline{K}} \cdot \overline{A \cdot K}} \\
 &= \overline{\overline{\overline{A} \cdot \overline{\overline{(\overline{B} \cdot \overline{C})}}} \cdot \overline{A \cdot \overline{(\overline{B} \cdot \overline{C})}}}
 \end{align*}
-\subsection{Implementacja układu w programie Multisim}
+Otrzymaliśmy równoważny układ bezpośrednio zapisujący się jako zbiór bramek NAND.
+\newpage
+\subsection{Implementacja układu 1a w programie Multisim}
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{1a}
+\caption{Górna część układu to układ faktyczny, dolna część - układ testujący. Jeżeli w którymkolwiek momencie wykryta zostanie rozbieżność, przerzutnik po prawej "zapamięta" ten fakt.}
+\end{figure}
+Moduł XWG1 został zaprogramowany aby sprawdzał wszystkie możliwe konbinacje wartości A,B,C.
 \subsection{Wnioski}
+Należy zauważyyć, że bramka NAND jest wystarczająca to utworzenia pełnego systemu logicznego. Tj, dowolną skończoną funkcję logiczną można fizycznie zaimplementować za pomocą skończonej ilości bramek NAND. 
 \newpage
 \section{Zadanie 1b}
 \subsection{Treść zadania}
@@ -53,6 +61,20 @@ Alarm uruchamia się, gdy system alarmowy jest uzbrojony i wykryty jest ruch lub
 \paragraph{}
 W oparciu o dowolne bramki logiczne, przełączniki i wskaźniki LED, proszę zaprojektować, zminimalizować, zbudować i przetestować układ realizujący funkcję opisanego wyżej systemu alarmowego. Rolę czujników mogą tutaj pełnić dowolne (dostępne w Multisimie) źródła sygnału cyfrowego.
 \subsection{Rozwiązanie teoretyczne}
-\subsection{Implementacja układu w programie Multisim}
+Zauważmy, że z perspektywy alarmu, dowolne naruszenie czujników jest traktowane identycznie - nie interesuje nas to, czy otwarte są drzwi czy okna, w obu przypadkach można się dostać do pomieszczenia. Możemy więc utworzyć sygnał łączny czujników, dalej oznaczony jako $A$.
+Skorzystamy z trzech przerzutników "zapamiętujących"odpowiednio: \\
+$\cdot$ Stan syreny alarmu, reprezentowanej przez LED. \\
+$\cdot$ Stan uzbrojenia alarmu: 0 - rozbrojony, 1 - uzbrojony. \\
+$\cdot$ Stan lampki błędu. \\
+\paragraph{Przyciski}
+Przycisk uzbrojenia uzbroi alarm, lub, jeżeli zachodzi sygnał A, ustawi lampkę błędu.
+Przycisk rozborjenia rozbraja alarm i wyłącza syrenę jeżeli jest włączona.
+Dodatkowo w celu usunięcia stanu nielegalnego, zablokujemy przycisk rozbrojenia jeżeli równocześnie wciśnięty jest przycisk uzbrojenia.
+\subsection{Implementacja układu 1b w programie Multisim}
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{1b}
+\caption{Sygnał U5 opowiada skutecznemu uzbrojeniu, U6 - nieskutecznemu. Sygnał U2 odpowiada za aktywację syreny alarmowej.}
+\end{figure}
 \subsection{Wnioski}
+
 \end{document}
