@@ -8,6 +8,7 @@
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{breqn}
+\usepackage{float}
 
 \author{Maciej Pieta \and Piotr Koproń \and Jakub Woś \and Rafał Piwowar}
 \date{Marzec 2023}
@@ -64,38 +65,67 @@ Alarm uruchamia się, gdy system alarmowy jest uzbrojony i wykryty jest ruch lub
 \paragraph{}
 W oparciu o dowolne bramki logiczne, przełączniki i wskaźniki LED, proszę zaprojektować, zminimalizować, zbudować i przetestować układ realizujący funkcję opisanego wyżej systemu alarmowego. Rolę czujników mogą tutaj pełnić dowolne (dostępne w Multisimie) źródła sygnału cyfrowego.
 \subsection{Rozwiązanie teoretyczne}
-\paragraph{Łączenie czujników}
+\paragraph{Oznaczenia}
+Przyjmijmy następujące oznaczenia sygnałów: \\
+$A_{1} \dots A_{4}$ jako sygnały czujników, \\
+B jako przycisk uzbrojenia, \\
+C jako przycisk rozbrojenia, \\
+D jako poprzedni stan odpowiedniego sygnału, \\
+E jako sygnalizator problemu, \\
+F jako stan uzbrojenia alarmu.
+\subsubsection{Łączenie czujników}
 Zauważmy, że z perspektywy alarmu, dowolne naruszenie czujników jest traktowane identycznie - nie interesuje nas to, czy otwarte są drzwi czy okna, w obu przypadkach można się dostać do pomieszczenia. Możemy więc utworzyć sygnał łączny czujników, dalej oznaczony jako $A$.
-\paragraph{Zapamiętywanie stanu}
-Skorzystamy z trzech przerzutników "zapamiętujących"odpowiednio: \\
-$\cdot$ Stan syreny alarmu, reprezentowanej przez LED. \\
-$\cdot$ Stan uzbrojenia alarmu: 0 - rozbrojony, 1 - uzbrojony. \\
-$\cdot$ Stan lampki błędu. \\
-\paragraph{Przyciski}
-Przycisk uzbrojenia uzbroi alarm, lub, jeżeli zachodzi sygnał A, ustawi lampkę błędu.
-Przycisk rozbrojenia rozbraja alarm i wyłącza syrenę jeżeli jest włączona.
-Dodatkowo w celu usunięcia stanu nielegalnego, zablokujemy przycisk rozbrojenia jeżeli równocześnie wciśnięty jest przycisk uzbrojenia.
-\paragraph{Implementacja logiczna stanów przejścia}
-Niech U oznacza stan uzbrojenia, R - rozbrojenia, E - błędu, S - syreny alarmowej. \\
-Niech B oznacza sygnał przycisku uzbrojenia, C - sygnał przycisku rozbrojenia. \\
-Wtedy otrzymujemy następujące przejścia:
-\begin{align*}
-RB\overline{A} &\implies U \\
-RBA &\implies E \\
-EB\overline{A} &\implies U \\
-UA &\implies S \\
-UC &\implies R \\
-SC &\implies R
-\end{align*}
-\subsection{Implementacja układu 1b w programie Multisim}
-\begin{figure}[h!]
-\includegraphics[width=\textwidth]{1b}
-\caption{Sygnał U5 opowiada skutecznemu uzbrojeniu, U6 - nieskutecznemu. Sygnał U2 odpowiada za aktywację syreny alarmowej.}
+Mamy totaj do czynienia z następującą tabelą prawdy: \\
+\begin{center}
+\begin{tabular}{c c}
+Sygnały czujników $A_{1} \dots A_{4}$ & Sygnał A \\
+\hline
+0000 & 0 \\
+Dowolny inny & 1
+\end{tabular}
+\end{center}
+Z praw logiki można bespośrednio wyprowadzić $A = A_{1} + A_{2} + A_{3} + A_{4}$.
+\subsection{Wyprowadzenie wzorów}
+\subsubsection{Sygnalizator błędu}
+\begin{figure}[H]
+\includegraphics[width=0.7\textwidth]{error}
+\caption{Tabela Karnaugh odpowiadająca sygnałowi błędu.}
 \end{figure}
+\subsubsection{Stan uzbrojenia}
+\begin{figure}[H]
+\includegraphics[width=0.7\textwidth]{alarm}
+\caption{Tabela Karnaugh odpowiadająca stanowi uzbrojenia.}
+\end{figure}
+\subsubsection{Syrena alarmowa}
+\begin{figure}[H]
+\includegraphics[width=0.7\textwidth]{syrena}
+\caption{Tabela Karnaugh odpowiadająca syrenie alarmowej.}
+\end{figure}
+
+\subsection{Implementacja układu 1b w programie Multisim}
+\begin{figure}[H]
+\includegraphics[width=0.7\textwidth]{fullMS}
+\caption{Pełnny układ, zaimplementowany w programie Multisim. Podprojekty S1-S3 przedstawione poniżej.}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=0.7\textwidth]{alarmMS}
+\caption{Implementacja sygnału uzbrojenia/rozbrojenia alarmu.}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=0.7\textwidth]{syrenaMS}
+\caption{Implemetacja sygnału syreny alarmowej}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=0.7\textwidth]{errorMS}
+\caption{Implementacja sygnału niepoprawnego uzbrojenia.}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=0.7\textwidth]{testerMS}
+\caption{Układ testujący nasz projekt (SC1). Górne lamki LED generują oczekiwany rezultat, dolne - rzeczywisty.}
+\end{figure}
+
+
 \subsection{Wnioski}
 \paragraph{Prostota a praktyka}
-Korzystając tylko z podstawowej wiedzy na temat bramek logicznych oraz przerzutników, jesteśmy w stanie zaprojektować układ stosowalny w życiu codziennym. Co więcej, mamy niemalże gwarancję że układ nasz będzie szybszy niż jakiekolwiek implementacje oparte o programowanie "klasycznego" procesora.
-\paragraph{3 przerzutniki}
-W celu zapamiętania możliwych stanów wykorzystaliśmy 3 przerzutniki, zamiast matematycznie niezbędnych dwóch.
-Zostało to podyktowane założeniem, że każdy przezutnik skład się z dwóch bramek logicznych. Odtworzenie zachowania na dwóch przerzutnikach wymagałoby użycia większej ilości bramek.
+Korzystając tylko z podstawowej wiedzy na temat bramek logicznych, jesteśmy w stanie zaprojektować układ stosowalny w życiu codziennym. Co więcej, mamy niemalże gwarancję że układ nasz będzie szybszy niż jakiekolwiek implementacje oparte o programowanie "klasycznego" procesora.
 \end{document}
