@@ -30,10 +30,10 @@ Jako że realizacja ma opierać się o synchroniczny przerzutnik T, to schemat p
 \includegraphics[width=0.7\textwidth]{KBB}
 \end{figure}
 W celu wyznaczenia bramek logicznych zastosujemy następujący algorytm: \\
-1. Wyznaczymy wzory przejścia dla przerzutników D oraz T.
-2. Nadamy równoważność wzorom przejścia.
-3. Otrzymamy zależność między sygnałami D,T, oraz Q.
-4. Przekształcimy otrzymaną zależność do funkcji T od D i Q.
+1. Wyznaczymy wzory przejścia dla przerzutników D oraz T. \\
+2. Nadamy równoważność wzorom przejścia. \\
+3. Otrzymamy zależność między sygnałami D,T, oraz Q. \\
+4. Przekształcimy otrzymaną zależność do funkcji T od D i Q. \\
 \newpage
 \paragraph{Wzory przejścia}
 Dla przerzutnika T: \\
@@ -44,7 +44,7 @@ T & Q & $Q_{T}^{+}$ \\
 1 & 0 & 1 \\
 1 & 1 & 0
 \end{tabular}
-$\implies$ Z definicji xor otrzymujemy $Q^{+} = T \text{ xor } Q$. (1) \\
+$\implies$ Z definicji xor otrzymujemy $Q^{+}_{T} = T \text{ xor } Q$. (1) \\
 Dla przerzutnika D: \\
 \begin{tabular}{c c c}
 D & Q & $Q_{D}^{+}$ \\
@@ -53,12 +53,12 @@ D & Q & $Q_{D}^{+}$ \\
 1 & 0 & 1 \\
 1 & 1 & 1
 \end{tabular}
-$\implies $ Bezpośrednio otrzymujemy $Q_{D} = D$. (2)\\
-Z (1) i (2) otrzymujemy równoważność $D = T \text{ xor } Q$ (3).
+$\implies $ Bezpośrednio otrzymujemy $Q_{D}^{+} = D$. (2)\\
+Z (1) i (2), podstawiając $Q^{+}_{T} = Q^{+}_{D}$ otrzymujemy $D = T \text{ xor } Q$ (3).
 \paragraph{Przekształcenie do funkcji}
-Chcemy utworzyć funkcję T od D i Q, tak aby (3) zawsze było spełnione. Tworzymy tabelę, gdzie po lewej stronie będziemy mieć wartości niezależne, po prawej - wyrażenia zależne.
+Chcemy utworzyć funkcję T od D i Q, tak aby (3) zawsze było spełnione. Tworzymy tabelę, gdzie po lewej stronie będziemy mieć wartości niezależne, w środku - wyrażenie wymuszające, po prawej - wyrażenia zależne.
 \begin{center}
-\begin{tabular}{c c c | c c }
+\begin{tabular}{c c | c | c c }
 D & Q & $D = T \text{ xor } Q$ & $T \text{ xor } Q$ & T \\
 0 & 0 & 1 & 0 & 0\\
 0 & 1 & 1 & 0 & 1\\
@@ -66,7 +66,7 @@ D & Q & $D = T \text{ xor } Q$ & $T \text{ xor } Q$ & T \\
 1 & 1 & 1 & 1 & 0
 \end{tabular}
 \end{center}
-Usuwając kolumny $D = T \text{ xor } Q$ i $T \text{ xor } Q$ z powyższej tabeli, otrzymujemy:
+Usuwając kolumny '$D = T \text{ xor } Q$' i '$T \text{ xor } Q$' z powyższej tabeli, otrzymujemy:
 \begin{tabular}{c c c }
 D & Q & T \\
 0 & 0 & 0\\
@@ -74,7 +74,38 @@ D & Q & T \\
 1 & 0 & 1\\
 1 & 1 & 0
 \end{tabular} $\implies$ Z definicji xor otrzymujemy $ T = D \text{ xor } Q$. \\
-
+\newpage
+\subsection{Implementacja w programie Multisim}
+\begin{figure}[H]
+\caption{Implementowany przerzutnik D.}
+\includegraphics[width = \textwidth]{2aimp}
+\end{figure}
+\begin{figure}[H]
+\caption{Układ SC1 powyższego rysunku.}
+\includegraphics[width = \textwidth]{2asc1}
+\end{figure}
+\begin{figure}[H]
+\caption{Układ testujący przerzutnik.}
+\includegraphics[width = \textwidth]{2atest}
+\end{figure}
+\begin{figure}[H]
+\caption{Ustawienia generatora słów (XWG1) i rezultat alalizatora logicznego (XLA1).}
+\includegraphics[width = 0.4\textwidth]{2agen}
+\includegraphics[width = 0.4\textwidth]{2aana}
+\end{figure}
+\newpage
+\subsection{Wnioski}
+\paragraph{Alternatywne koncepcje}
+Rozważaliśmy podejście alternatywne, w którym zamiast przekształcać sygnał wejściowy, przekształcalibyśmy sygnał wyjściowy.
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{2afail}
+\end{figure}
+ Szybko doszliśmy jednak do wniosku że takie podejście wymagałoby zastosowania drugiego przerzutnika, co mijałoby się z celem zadania, więc skupiliśmy się na opisanym wyżej podejściu.
+\paragraph{Zastosowania}
+Przerzutniki typu D mogą być stosowane na przykład w rejestrach, co zademonstrujemy w dalszej części sprawozdania - w którym zbudowaliśmy czterobitowy rejestr PISO w oparciu właśnie o przerzutniki D.
 \section{Zadanie 2b}
-
+\paragraph{Treść zadania}
+Korzystając z wybranych przerzutników, proszę zbudować czterobitowy rejestr PISO. Tak jak w przypadku pozostałych zadań, proszę skutecznie przetestować działanie układu. Następnie proszę zbudować praktyczny układ, który za pomocą przełączników binarnych pozwoli ustawić żądaną czterobitową wartość, a następnie przy pomocy piątego przełącznika uruchomi szeregową transmisję odczytywanej wartości.
+\subsection{Komentarz twórczy}
+ Co tutaj?
 \end{document}
