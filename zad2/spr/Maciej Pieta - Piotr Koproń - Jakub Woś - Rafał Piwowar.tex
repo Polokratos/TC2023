@@ -102,10 +102,80 @@ Rozważaliśmy podejście alternatywne, w którym zamiast przekształcać sygna�
 \end{figure}
  Szybko doszliśmy jednak do wniosku że takie podejście wymagałoby zastosowania drugiego przerzutnika, co mijałoby się z celem zadania, więc skupiliśmy się na opisanym wyżej podejściu.
 \paragraph{Zastosowania}
-Przerzutniki typu D mogą być stosowane na przykład w rejestrach, co zademonstrujemy w dalszej części sprawozdania - w którym zbudowaliśmy czterobitowy rejestr PISO w oparciu właśnie o przerzutniki D.
+Przerzutniki typu D mogą być stosowane na przykład w rejestrach, co zademonstrujemy w dalszej części sprawozdania - w którym zbudowaliśmy czterobitowy rejestr PISO w oparciu właśnie o przerzutniki D. \\
+Alternatywnie, przerzutnik typu D może być zastosowany w sygnalizacji świetlnej, do synchronizacji zmian świateł między pasami, zachowując możliwość indywidualnej zmiany świateł.
+\begin{figure}[H]
+\includegraphics[width = 0.5\textwidth]{sygnalizacja}
+\caption{Fragment przestawiający kontrolę żółtego światła.}
+\end{figure}
+Jeżeli chcemy zmienić światło tylko na dolnym sygnalizatorze, to wystarczy zmienić sygnał D2. Jeżeli chemy zmienić wszystkie światła na raz, to synchronizacja gwarantuje nam że nawet jeżeli sygnały D1 i D2 ustawią się w nieco innym momenie, to faktyczne światła zmienią się równocześnie.
+
 \section{Zadanie 2b}
 \paragraph{Treść zadania}
 Korzystając z wybranych przerzutników, proszę zbudować czterobitowy rejestr PISO. Tak jak w przypadku pozostałych zadań, proszę skutecznie przetestować działanie układu. Następnie proszę zbudować praktyczny układ, który za pomocą przełączników binarnych pozwoli ustawić żądaną czterobitową wartość, a następnie przy pomocy piątego przełącznika uruchomi szeregową transmisję odczytywanej wartości.
-\subsection{Komentarz twórczy}
- Co tutaj?
+\paragraph{} Wykorzystane zostały synchroniczne przerzutniki D, jak zostało wspomniane wyżej.
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{BlackBox}
+\end{figure}
+
+\paragraph{Implementacja}
+W celu zapamiętania czterech bitów - korzystamy z czterech przerzutników D. \\
+W trybie zapisu, zapisują one wartości odpowiednio input 1-4. \\
+W trybie odczytu, przez cztery cykle zegara na wartość output przekazywana jest wartość ostatniego przerzutnika, wszystkie poprzednie wartości są przesuwane do kolejych przerzutników. \text{(1 do 2, 2 do 3, 3 do 4)} Do pierwszego przerzutnika wpisujemy 0. W ten sposób po zakończeniu transmisji otrzymujemy stały sygnał 0, taki sam jak w trybie zapisu.
+\begin{figure}[H]
+\includegraphics[width = 0.95\textwidth]{ukladPiso}
+\end{figure}
+\newpage
+Układ testujący licznik. Lampka błędu wskazuje od razu czy wystąpił jakikolwiek błąd, analizator logiczny podaje szczegółowy obraz.
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{ukladTesty_1}
+\end{figure}
+Generator słów XWG1 został uruchomiony z automatyczą serią testów wygenerowaną przez poniższy program języka Python:\\
+\begin{lstlisting}[language = Python]
+output = []
+def toBinary(val):
+    res = []
+    while val != 0:
+        res.insert(0, val % 2)
+        val = val // 2
+    while len(res) < 4:
+        res.insert(0, 0)
+    return res
+def hex4(val):
+    res = hex(val)[2:]
+    while len(res) < 4:
+        res = "0" + res
+    return res
+output.append("Data:\n")
+output.append("80000000\n")
+for i in range(16):
+    output.append('0000001' + hex(i)[2:] + '\n')
+    binary = toBinary(i)
+    for k in range(4):
+        output.append('0'+ str(binary[k]) +'000000' + '\n')
+    output.append('0000001' + hex(i)[2:] + '\n')
+    for k in range(4):
+        output.append('0' + str(binary[k]) + '00000' + hex(i)[2:] + '\n')
+output.append("Initial:" + '\n')
+output.append("0000" + '\n')
+output.append("Final:" + '\n')
+output.append(hex4(161) + '\n')
+
+with open('output.dp', 'w') as outputFile:
+    outputFile.writelines(output)
+\end{lstlisting}
+Rezultat z analizatora logicznego (XLA1).
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{analyzerTesty_1}
+\end{figure}
+Układ na przełącznikach. Lampka X1 przedstawia szeregowe wyjście.
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{ulad2b_2}
+\end{figure}
+Rezultat ręcznych testów zapisany za pomocą dołączonego analizatora logicznego (XLA2).
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{analyzerTesty_2}
+\end{figure}
+\paragraph{Słowem komentarza twórczego}
+Podczas tworzenia rejestru, pierwotnie użyliśmy przerzutnika asynchroniczego zamiast synchronicznego. Układ w takim stanie oczywiście nie działał. Jednym z możlwych "rozwiązań" okazało się zamiana każdego z przerzutników na dwa identyczne, z pośrednim połączeniem $Q_{1} = D{2}$. Zadziwiająco, rozwiązanie takie działało... czasami. Czasami jednak produkowało wyniki niewytłumaczalne przez autorów. Ostatecznie zauważyliśmy jednak nasz błąd i wymieniliśmy pary przerzutników asynchronicznych na pojedyncze - synchroniczne.
 \end{document}
