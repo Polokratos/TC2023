@@ -11,7 +11,7 @@
 \usepackage{float}
 
 \author{Maciej Pieta \and Piotr Koproń \and Jakub Woś \and Rafał Piwowar}
-\date{Marzec 2023}
+\date{Maj 2023}
 
 \title{Technika Cyfrowa. \\ Ćwiczenie 3.}
 
@@ -35,7 +35,7 @@ Tabele prawdy informują o kolejnej wartości wysyłanej przez licznik, wyznaczo
 \includegraphics[width = \textwidth]{3a_tabele_prawdy}
 \end{figure}
 \subsection{Tabele Karnaugh}
-Dokonujemy minimalizacji, w celu wyznaczenia bezpośrednich wzorów na kolejne wartości, oznaczone $D_{0}, D_{1},D_{2}$.
+Dokonujemy minimalizacji, w celu wyznaczenia bezpośrednich wzorów na wejścia do przerzutników, oznaczone $D_{0}, D_{1},D_{2}$.
 \begin{figure}[H]
 \includegraphics[width = 0.5\textwidth]{3a_karnaugh_2}
 \includegraphics[width = 0.5\textwidth]{3a_karnaugh_1}
@@ -44,7 +44,7 @@ Dokonujemy minimalizacji, w celu wyznaczenia bezpośrednich wzorów na kolejne w
 \begin{figure}[H]
 \includegraphics[width = \textwidth]{3a_uklad}
 \end{figure}
-Dodatkowo załączamy układ wizulalizacjy działanie naszego licznika.
+Dodatkowo załączamy układ wizualizujący działanie naszego licznika.
 \begin{figure}[H]
 \includegraphics[width = \textwidth]{3a_wizualizacja}
 \end{figure}
@@ -55,27 +55,40 @@ Przygotowaliśmy automatyczny model testujący. Lampka błędu pozostanie zgaszo
 \end{figure}
 Ustawienia generatora słów i wyniki analizatora logicznego.
 \begin{figure}[H]
-\includegraphics[width = \textwidth]{3a_generator}
-\includegraphics[width = \textwidth]{3a_analizer}
+\includegraphics[width = 0.9\textwidth]{3a_generator}
+\includegraphics[width = 0.9\textwidth]{3a_analizer}
 \end{figure}
-Wartość oznaczona "4" stale ja 1 oznacza że lampka błędu nie świeci, czyli program działa.
+Wartość oznaczona "4" stale równa 1 oznacza że lampka błędu nie świeci, czyli program działa.
 \subsection{Wnioski}
 \paragraph{Alternatywne rozwiązania}
+Rozważaliśmy wykorzystanie przerzutnika T na zapamiętywanie najmniej znaczącego bitu, ale uznaliśmy że jednolitość przerzutników zmniejsza poziom skomplikowania układu.
+\paragraph{Słowem komentarza twórczego}
+Podczas przyotowywania tabeli Karnaugh, pierwotnie wyznaczyliśmy $D_{0} = \overline{Q_{2}}Q_{0} + Q_{2}Q_{1}\overline{Q_{0}} + Q_{1}\overline{Q_{0}}Q_{2}$., zanim zorienitowaliśmy się że możemy uprościć układ.
 \paragraph{Zastosowania}
 Licznik może być wykorzystany do synchronizacji sygnalizacji świetlnej interskrzyżowaniowo, w celu zapewnienia optymalnych warunków jazdy dla kierowców jadących zgodnie z ogarniczeniami prędkości. (Jak jedzie przepisowo, to cały czas będzie miał zielone, jak nie - to i tak będzie musiał hamować na czerwonym).
-RYSUNEK DO TEGO.
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{3a_swiatla}
+\end{figure}
 \section{Zadanie 3b}
 \paragraph{Treść zadania}
 Bazując na przerzutnikach "D", zaprojektować, zbudować i przetestować automat realizujący detekcję wprowadzanej na jego wejście czterobitowej wartości. Automat powinien rozpoznawać liczbę binarną: "1101". Jako źródło wprowadzanej wartości proszę użyć układu zbudowanego w ramach ćw.2b.
+\newpage
 \paragraph{Układ zbudowany w ramach ćwiczenia 2b}
-Zgodnie z komentarzem zwrotnym do ćwiczenia 2b, zbudowany przez nas układ PISO wymagał pewnych poprawek. Dla klaryfikacji, załączamy tutaj poprawioną wersję.
+Zgodnie z komentarzem zwrotnym do ćwiczenia 2b, zbudowany przez nas układ PISO wymagał pewnych poprawek. Załączamy tutaj poprawioną wersję.
 \begin{figure}[H]
 \includegraphics[width = \textwidth]{3b_2b_klaryfikacja}
 \end{figure}
-\subsection{Ogólna idea rozwiązania}
-FIXME: Add Wejścia/Wyjścia.
+Układ SC1 zaimplemtowany poniżej:
 \begin{figure}[H]
-\includegraphics[width = 0.5\textwidth]{3b_blackbox}
+\includegraphics[width = \textwidth]{3b_SC1}
+\end{figure}
+\subsection{Ogólna idea rozwiązania}
+Automat na wejściu przyjmuje zewenętrzy zegar, oraz sygnał wejściowy.
+Oprócz tego, wprowadzony jest sygnał resetujący automat.
+Na wyjściu, sygnał outY przekazuje inforamacje o tym, czy liczba "1011" została rozpoznana.
+Dodatkowo, sygnały out1 i out2 pozwalają (wraz z outY) na poznanie dokładnego stanu automatu.
+\begin{figure}[H]
+\includegraphics[width = 0.3\textwidth]{3b_blackbox}
 \end{figure}
 Implementujemy następujący automat:
 \begin{figure}[H]
@@ -93,7 +106,7 @@ Implementujemy następujący automat:
 \begin{figure}[H]
 \includegraphics[width = \textwidth]{3b_uklad}
 \end{figure}
-W połączeniu z układem PISO:
+W połączeniu z układem PISO z zad. 2b:
 \begin{figure}[H]
 \includegraphics[width = \textwidth]{3b_uklad_z_2b_blackbox}
 \end{figure}
@@ -103,53 +116,19 @@ Przygotowaliśmy automatyczny model testujący. Lampka błędu pozostanie zgaszo
 \includegraphics[width = \textwidth]{3b_tester}
 \end{figure}
 Załączamy kod wykorzystany do utworzenia konfiguracji generatora słów.
-\begin{lstlisting}
-output = []
-
-def toBinary(val):
-    res = []
-    while val != 0:
-        res.insert(0, val % 2)
-        val = val // 2
-
-    while len(res) < 4:
-        res.insert(0, 0)
-    
-    return res
-
-def hex4(val):
-    res = hex(val)[2:]
-    while len(res) < 4:
-        res = "0" + res
-    return res
-
-def addOutput(data):
-    output.append(data[:1] + '1' + data[2:])
-    output.append(data[:1] + '0' + data[2:])
-
-output.append("Data:\n")
-addOutput("10000000\n") 
-for i in range(16):
-    addOutput("80000000\n")
-    addOutput('0000001' + hex(i)[2:] + '\n')
-    binary = toBinary(i)
-    for k in range(4):                              
-        addOutput('00000000' + '\n')
-    addOutput('00000' + str(int(i == 13)) + '00' + '\n')
-
-output.append("Initial:" + '\n')
-output.append("0000" + '\n')
-output.append("Final:" + '\n')
-output.append(hex4(224) + '\n')
-
-with open('output.dp', 'w') as outputFile:
-    outputFile.writelines(output)
-\end{lstlisting}
-Rezultaty z analizatora logicznego. Linia "20" stale na 1 oznacza brak błędu.
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{3b_code}
+\end{figure}
+Rezultaty z analizatora logicznego. Linia "20" stale na 0 oznacza brak błędu.
 \begin{figure}[H]
 \includegraphics[width = \textwidth]{3b_analyzer}
 \end{figure}
 \subsection{Wnioski}
 \paragraph{Alternatywne rozwiązania}
+Automat realizuje detekcję "1101" z dowolnym prefiksem - alternatywny automat mógły przechodzić do stanu pułapki po otrzymaniu nieprawidłowego ciągu aż do momentu zresetowania. 
 \paragraph{Zastosowania}
+Automat taki może być zastosowany w drzwiach automatycznych połączonych z sensorem ruchu.
+Automat najpierw sprawdza brak ruchu przez dłuższy czas ("11'), następnie ruchu, '0' - gdy ktoś podchodzi do drzwi, a następnie brak ruchu '1' - gdy ktoś zatrzymuje się przed drzwiami.
+\paragraph{Zamki}
+Rozważaliśmy też alternatywne zastosowanie w zamku cyfrowym - rozpoznającym kod "1101" - ale zorientowaliśmy się że osobny układ PISO z wejściem 'mode' tworzy podatność na atak, gdzie atakujący mógłby wymusić zmianę trybu aby wysłać więcej niż cztery bity.
 \end{document}
